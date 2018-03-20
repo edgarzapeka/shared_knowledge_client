@@ -21,10 +21,16 @@ import MenuItem from 'material-ui/Menu/MenuItem'
 import Menu from 'material-ui/Menu'
 import AccountCircle from 'material-ui-icons/AccountCircle'
 
+import { identifyUser, logoutUser } from './utils/helpers.js'
+
 class App extends Component {
 
   state = {
     anchorEl: null
+  }
+
+  componentDidMount(){
+    this.props.identifyUser()
   }
 
   handleMenu = event => {
@@ -36,7 +42,7 @@ class App extends Component {
   };
 
   render() {
-    const { classes, userState } = this.props
+    const { classes, userState, logoutUser } = this.props
     const { anchorEl } = this.state
     const open = Boolean(anchorEl)
 
@@ -81,6 +87,7 @@ class App extends Component {
                   >
                     <MenuItem onClick={this.handleClose}>Profile</MenuItem>
                     <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                    <MenuItem onClick={() => logoutUser()}>Logout</MenuItem>
                   </Menu>
                 </div>)
                 : (<Link to="/login"><Button color="inherit" className={classes.menuItem}>Login</Button></Link>)}
@@ -121,4 +128,11 @@ function mapStateToProps(state){
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(App))
+function mapDispatchToProps(dispatch){
+  return {
+    identifyUser: () => dispatch(identifyUser()),
+    logoutUser: () => dispatch(logoutUser())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App))

@@ -11,7 +11,7 @@ import Checkbox from 'material-ui/Checkbox'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router'
 
-import { login } from '../actions/'
+import { login, register } from '../actions/'
 
 class Login extends Component{
 
@@ -19,7 +19,8 @@ class Login extends Component{
         super(props)
 
         this.handleChange = this.handleChange.bind(this)
-        this.submitLogin = this.submitLogin.bind(this)  
+        this.submitLogin = this.submitLogin.bind(this)
+        this.submitRegistration = this.submitRegistration.bind(this)  
     }
 
     state ={
@@ -40,10 +41,6 @@ class Login extends Component{
     submitLogin(){
         const { loginEmail, loginPassword, rememberMe } = this.state
 
-        console.log('Login: ' + loginEmail)
-        console.log("Password: " + loginPassword)
-        console.log('RememberMe: ' + rememberMe)
-
         const userData = {
             email: loginEmail,
             password: loginPassword,
@@ -59,12 +56,28 @@ class Login extends Component{
         })
     }
 
+    submitRegistration(){
+        const { registrationEmail, registrationPassword, registrationConfirmPassword } = this.state
+
+        const userData = {
+            email: registrationEmail,
+            password: registrationPassword,
+            confirmPassword: registrationConfirmPassword
+        }
+
+        console.log(registrationEmail)
+        console.log(registrationPassword)
+        console.log(registrationConfirmPassword)
+
+        this.props.submitRegister(userData).then(() => console.log(this.props.userState))
+    }
+
     render(){
         const { classes } = this.props
         const { rememberMe } = this.state
         const { userState } = this.props
 
-        if (userState.isUserLogin){
+        if (userState.isUserLogin === true){
             return (
                 <Redirect to='/' />
             )
@@ -112,30 +125,33 @@ class Login extends Component{
                         Sign Up
                     </Typography>
                     <TextField
-                        id="email-input"
+                        id="registrationEmail"
                         label="Email"
                         className={classes.textField}
-                        type="text"
+                        type="email"
                         autoComplete="current-email"
                         margin="normal"
+                        onChange={this.handleChange('registrationEmail')}
                     />
                     <TextField
-                        id="password-input"
+                        id="registrationPassword"
                         label="Password"
                         className={classes.textField}
                         type="password"
                         autoComplete="current-password"
                         margin="normal"
+                        onChange={this.handleChange('registrationPassword')}
                     />
                     <TextField
-                        id="password-input"
+                        id="registrationConfirmPassword"
                         label="Confirm Password"
                         className={classes.textField}
                         type="password"
                         autoComplete="current-password"
                         margin="normal"
+                        onChange={this.handleChange('registrationConfirmPassword')}
                     />
-                    <Button color="primary" className={classes.button}>
+                    <Button color="primary" className={classes.button} onClick={this.submitRegistration}>
                         Sign Up
                     </Button>
                 </Grid>
@@ -183,7 +199,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
     return {
-        submitLogin: (userData) => dispatch(login(userData))
+        submitLogin: (userData) => dispatch(login(userData)),
+        submitRegister: (userData) => dispatch(register(userData))
     }
 }
 
