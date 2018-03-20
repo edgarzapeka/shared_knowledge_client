@@ -5,12 +5,16 @@
   "dependencies": {
     "bootstrap": "4.0.0",
     "font-awesome": "4.7.0",
-    "mdbreact": "git+https://github.com/mdbootstrap/React-Bootstrap-with-Material-Design.git",
+    "material-ui": "^1.0.0-beta.38",
+    "material-ui-icons": "^1.0.0-beta.36",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-error-overlay": "4.0.0",
+    "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
