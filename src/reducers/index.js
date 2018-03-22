@@ -7,8 +7,14 @@ function auth(state = {isUserLogin: false}, action){
         case Types.USER_LOGIN:
             return {
                 isUserLogin: true,
-                token: action.token,
-                secret: action.secret
+                userState : {
+                    id: action.id,
+                    email: action.email,
+                    name: action.name,
+                    karma: action.karma,
+                    token: action.token,
+                    secret: action.secret
+                }
             }
         case Types.USER_LOGOUT:
             return {

@@ -1,9 +1,11 @@
 const host = 'https://localhost:44344'
 const authHeaders = {
-    Accept: 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Accept': 'application/json',
+    Authorization: 'whatever-you-want',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Credentials': '*'
 }
+
 
 export function login(email, password, rememberMe ){
     return fetch(`${host}/auth/login`, {

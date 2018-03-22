@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import Grid  from 'material-ui/Grid'
 import { withStyles } from 'material-ui/styles'
 import Typography from 'material-ui/Typography'
-import { FormControl, FormHelperText } from 'material-ui/Form'
-import Input, { InputLabel } from 'material-ui/Input'
 import TextField from 'material-ui/TextField'
 import Button from 'material-ui/Button'
 import Checkbox from 'material-ui/Checkbox'
@@ -53,7 +51,7 @@ class Login extends Component{
                 localStorage.setItem('secret', this.props.userState.secret)
 
             }
-        })
+        }).then(() => console.log(this.props.userState))
     }
 
     submitRegistration(){
