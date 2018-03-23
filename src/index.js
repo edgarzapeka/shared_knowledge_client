@@ -21,10 +21,11 @@ const store = createStore(
 )
 
 ReactDOM.render(
-    <Provider store={store}>
-        <Router>
-            <App />
-        </Router>
-    </Provider>    
+    <Router>
+        <Provider store={store}>
+                <App />
+            
+        </Provider> 
+    </Router>   
     , document.getElementById('root'));
 registerServiceWorker();

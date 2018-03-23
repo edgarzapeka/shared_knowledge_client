@@ -21,6 +21,7 @@ import Menu from 'material-ui/Menu'
 import AccountCircle from 'material-ui-icons/AccountCircle'
 
 import { identifyUser, logoutUser } from './utils/helpers.js'
+import { withRouter } from 'react-router-dom'
 
 class App extends Component {
 
@@ -95,10 +96,10 @@ class App extends Component {
         </div> 
 
         <Route exact path="/" component={HomeScreen} />
-        <Route exact path="/links" component={LinkList} />
-        <Route exact path="/categories" component={CategoryList} />
-        <Route exact path="/questions" component={QuestionList} />
-        <Route exact path="/login" component={Login} />
+        <Route  path="/links" component={LinkList} />
+        <Route  path="/categories" component={CategoryList} />
+        <Route  path="/questions" component={QuestionList} />
+        <Route  path="/login" component={Login} />
       </Grid>
     );
   }
@@ -123,7 +124,8 @@ const styles = {
 
 function mapStateToProps(state){
   return {
-    userState: state.auth
+    userState: state.auth,
+    links: state.links
   }
 }
 
@@ -134,4 +136,4 @@ function mapDispatchToProps(dispatch){
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App)))
