@@ -5,6 +5,8 @@ export function formatDate(date) {
       "August", "September", "October",
       "November", "December"
     ];
+
+    date = new Date(Date.parse(date))
   
     var day = date.getDate();
     var monthIndex = date.getMonth();

@@ -26,13 +26,7 @@ function auth(state = {isUserLogin: false}, action){
 }
 
 const initialTestLinks = {
-    list: [{id: '1', title: 'Test1', linkURL: 'www.test.ru', rating: 21, date: new Date(), userName: 'Carl'},
-            {id: '2', title: 'Test2', linkURL: 'www.test.ru', rating: 11, date: new Date(), userName: 'Harold'},
-            {id: '3', title: 'Test3', linkURL: 'www.test.ru', rating: 1, date: new Date(), userName: 'Kevin'},
-            {id: '4', title: 'Test4', linkURL: 'www.test.ru', rating: 4, date: new Date(), userName: 'Ben'},
-            {id: '5', title: 'Test5', linkURL: 'www.test.ru', rating: 71, date: new Date(), userName: 'Tom'},
-            {id: '6', title: 'Test6', linkURL: 'www.test.ru', rating: 13, date: new Date(), userName: 'Sasha'},
-            {id: '7', title: 'Test7', linkURL: 'www.test.ru', rating: 3, date: new Date(), userName: 'Lin'} ],
+    list: [],
     filter: 'none'
 }
 
@@ -41,7 +35,7 @@ function links(state = initialTestLinks, action){
         case Types.LINKS_INIT:
             return {
                 filter: 'none',
-                links: [...action.links]
+                list: action.links
             }
         case Types.LINKS_ADD:
             let newState = {
@@ -49,6 +43,42 @@ function links(state = initialTestLinks, action){
             }
             newState.list.push(action.link)
             return newState
+        case Types.LINKS_DELETE:
+            return {
+                filter: state.filter,
+                list: state.list.filter(l => l.id !== action.id)
+            }
+        case Types.LINKS_UPDATE:
+            return{
+                filter: state.filter,
+                list: state.list.map(l => l.id === action.link.id ? action.link : l)
+            }
+        default:
+            return state
+    }
+}
+
+const initialComments = {
+    filter: 'none',
+    comments: []
+}
+
+function comments(state = initialComments, action){
+    switch(action.type){
+        case Types.COMMENTS_LINK_INIT:
+            return {
+                filter: 'none',
+                comments: action.comments
+            }
+        case Types.COMMENTS_LINK_ADD:
+            let newState = {...state}
+            newState.comments.push(action.comment)
+            return newState
+        case Types.COMMENTS_LINK_DELETE:
+            return {
+                filter: state.filter,
+                comments: state.comments.filter(c => c.id !== action.id)
+            }
         default:
             return state
     }
@@ -56,5 +86,6 @@ function links(state = initialTestLinks, action){
 
 export default combineReducers({
     auth,
-    links
+    links,
+    comments
 })

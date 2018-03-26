@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router'
 
 import { login, register } from '../actions/'
+import { saveUserDataLocally } from '../utils/helpers'
 
 class Login extends Component{
 
@@ -47,9 +48,14 @@ class Login extends Component{
 
         this.props.submitLogin(userData).then(() => {
             if (this.props.userState.isUserLogin){
-                localStorage.setItem('token', this.props.userState.token)
-                localStorage.setItem('secret', this.props.userState.secret)
-
+                saveUserDataLocally({
+                    token: this.props.userState.userState.token,
+                    secret: this.props.userState.userState.secret,
+                    id: this.props.userState.userState.id,
+                    karma: this.props.userState.userState.karma,
+                    name: this.props.userState.userState.name,
+                    email: this.props.userState.userState.email
+                })
             }
         }).then(() => console.log(this.props.userState))
     }

@@ -13,6 +13,59 @@ export function successfullLogin(userState){
     }
 }
 
+function addedLink(linkState){
+    return {
+        type: Type.LINKS_ADD,
+        link: {
+            ...linkState,
+            date: new Date(Date.parse(linkState.date))
+        }
+    }
+}
+
+function fetchAddedLinkComment(data){
+    console.log(data)
+    return {
+        type: Type.COMMENTS_LINK_ADD,
+        comment: data
+    }
+}
+
+function fetchDeletedLinkComment(id){
+    return {
+        type: Type.COMMENTS_LINK_DELETE,
+        id: id
+    }
+}
+
+function fetchDeletedLink(id){
+    return {
+        type: Type.LINKS_DELETE,
+        id: id
+    }
+}
+
+function fetchLinks(links){
+    return {
+        type: Type.LINKS_INIT,
+        links: links
+    }
+}
+
+function fetchUpdatedLink(link){
+    return {
+        type: Type.LINKS_UPDATE,
+        link: link
+    }
+}
+
+function fetchAllLinkComments(data){
+    return {
+        type: Type.COMMENTS_LINK_INIT,
+        comments: data
+    }
+}
+
 export function login(userData){
     return (dispatch) => API.login(userData.email, userData.password, userData.rememberMe)
         .then(response => response.json())
@@ -29,4 +82,46 @@ export function logout(){
     return {
         type: Type.USER_LOGOUT
     }
+}
+
+export function getAllLinks(){
+    return (dispatch) => API.getAllLinks()
+        .then(response => response.json())
+        .then(data => dispatch(fetchLinks(data.links)))
+}
+
+export function addLink(title, url, userCredits){
+    return (dispatch) => API.addLink(title, url, userCredits)
+        .then(response => response.json())
+        .then(data => dispatch(addedLink(data)))
+}
+
+export function deleteLink(id, userCredits){
+    return (dispatch) => API.deleteLink(id, userCredits)
+        .then(response => response.json())
+        .then(data => dispatch(fetchDeletedLink(data)))
+}
+
+export function updateLink(linkId, title, linkURL, userCredits){
+    return (dispatch) => API.updateLink(linkId, title, linkURL, userCredits)
+        .then(response => response.json())
+        .then(data => dispatch(fetchUpdatedLink(data)))
+}
+
+export function addLinkComment(body, authorId, linkId, userCredits){
+    return (dispatch) => API.addLinkComment(body, linkId, authorId, userCredits)
+        .then(response => response.json())
+        .then(data => dispatch(fetchAddedLinkComment(data)))
+}
+
+export function deleteLinkComment(commentId, userCredits){
+    return (dispatch) => API.deleteLinkComment(commentId, userCredits)
+        .then(response => response.json())
+        .then(data => dispatch(fetchDeletedLinkComment(data)))
+}
+
+export function getAllLinkComments(){
+    return (dispatch) => API.getAllLinkComments()
+        .then(response => response.json())
+        .then(data => dispatch(fetchAllLinkComments(data.comments)))
 }

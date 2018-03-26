@@ -7,6 +7,7 @@ import CategoryList from './components/CategoryList'
 import QuestionList from './components/QuestionList'
 import { Link } from 'react-router-dom'
 import Login from './components/Login';
+import LinkView from './components/LinkView'
 import { connect } from 'react-redux'
 
 import { withStyles } from 'material-ui/styles'
@@ -23,6 +24,8 @@ import AccountCircle from 'material-ui-icons/AccountCircle'
 import { identifyUser, logoutUser } from './utils/helpers.js'
 import { withRouter } from 'react-router-dom'
 
+import { addLink, getAllLinks, getAllLinkComments } from './actions/'
+
 class App extends Component {
 
   state = {
@@ -31,6 +34,8 @@ class App extends Component {
 
   componentDidMount(){
     this.props.identifyUser()
+    this.props.getAllLinks()
+    this.props.getAllLinkComments()
   }
 
   handleMenu = event => {
@@ -96,10 +101,13 @@ class App extends Component {
         </div> 
 
         <Route exact path="/" component={HomeScreen} />
-        <Route  path="/links" component={LinkList} />
-        <Route  path="/categories" component={CategoryList} />
-        <Route  path="/questions" component={QuestionList} />
-        <Route  path="/login" component={Login} />
+        <Route exact  path="/links" component={LinkList} />
+        <Route exact path="/categories" component={CategoryList} />
+        <Route exact path="/questions" component={QuestionList} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/links/:id" render={ ({match}) => (
+          <LinkView id={match.params.id} />
+        )} />
       </Grid>
     );
   }
@@ -125,14 +133,17 @@ const styles = {
 function mapStateToProps(state){
   return {
     userState: state.auth,
-    links: state.links
+    links: state.links,
+    comments: state.comments
   }
 }
 
 function mapDispatchToProps(dispatch){
   return {
     identifyUser: () => dispatch(identifyUser()),
-    logoutUser: () => dispatch(logoutUser())
+    logoutUser: () => dispatch(logoutUser()),
+    getAllLinks: () => dispatch(getAllLinks()),
+    getAllLinkComments: () => dispatch(getAllLinkComments())
   }
 }
 

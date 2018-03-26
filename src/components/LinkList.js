@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Grid from 'material-ui/Grid'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 import Paper from 'material-ui/Paper'
 import Typography from 'material-ui/Typography'
@@ -14,11 +15,29 @@ import Modal from 'material-ui/Modal'
 import TextField from 'material-ui/TextField'
 
 import { formatDate } from '../utils/formatter.js'
+import { addLink} from '../actions/'
 
 class LinkList extends Component{
 
+    constructor(props){
+        super(props)
+
+        this.submitAddLink = this.submitAddLink.bind(this)
+    }
+
+    componentDidMount(){
+    }
+
     state = {
-        addLinkModal: false
+        addLinkModal: false,
+        linkTitle: '',
+        linkUrl: ''
+    }
+
+    handleChange = name => event => {
+        this.setState({
+          [name]: event.target.value,
+        });
     }
 
     getModalStyle() {
@@ -32,6 +51,19 @@ class LinkList extends Component{
         };
     }
 
+    submitAddLink(){
+        const { linkTitle, linkUrl } = this.state
+        const { userState } = this.props
+
+        this.props.addLink(linkTitle, linkUrl, userState).then(() => {
+            this.setState({addLinkModal: false,linkTitle: '',linkUrl: ''})
+            console.log('Title: ' + linkTitle)
+            console.log('LinkURL: ' + linkUrl)
+            console.log('State: ' + userState)
+            console.log('added')
+        })
+    }
+
     render(){
         const { links, classes } = this.props
 
@@ -42,7 +74,7 @@ class LinkList extends Component{
                 </Button>
                 {links.map(l => {
                     return (
-                        <Grid item md={12}>
+                        <Grid item md={12} key={l.id}>
                             <Paper className={classes.root} elevation={4}>
                                 <Link color={'primary'} className={classes.icon} />
                                 <div className={classes.rateBlock}>
@@ -53,9 +85,11 @@ class LinkList extends Component{
                                     <KeyboardArrowDown />
                                 </div>
                                 <div className={classes.mainInfoBlock}>
-                                    <Typography variant="headline" component="h3">
-                                        {l.title}
-                                    </Typography>
+                                    <RouterLink to={`/links/${l.id}`}>
+                                        <Typography variant="headline" component="h3">
+                                            {l.title}
+                                        </Typography>
+                                    </RouterLink>
                                     <div className={classes.infoFooter}>
                                         <Typography component="p">
                                             by {l.userName}
@@ -63,7 +97,9 @@ class LinkList extends Component{
                                         <Typography component="p" className={classes.infoFooterItem}>
                                             {formatDate(l.date)}
                                         </Typography>
-                                        <InsertComment className={classes.infoFooterItem} />
+                                        <RouterLink to={`/links/${l.id}`}>
+                                            <InsertComment className={classes.infoFooterItem} />
+                                        </RouterLink>
                                         <Typography component="p">
                                             23
                                         </Typography>
@@ -88,21 +124,23 @@ class LinkList extends Component{
                         </Typography>
 
                         <TextField
-                                id="title"
+                                id="linkTitle"
                                 label="Headline"
                                 placeholder="Your beautiful title..."
                                 className={classes.textField}
                                 margin="normal"
+                                onChange={this.handleChange('linkTitle')}
                         />
                         <TextField
-                            id="link"
+                            id="linkUrl"
                             label="Link URL"
                             placeholder="www.website.com"
                             multiline
                             className={classes.textField}
                             margin="normal"
+                            onChange={this.handleChange('linkUrl')}
                         />
-                        <Button color="primary" className={classes.buttonModal}>
+                        <Button color="primary" className={classes.buttonModal} onClick={this.submitAddLink}>
                             Add
                         </Button>
                         <Button color="secondary" className={classes.buttonModal} onClick={() => this.setState({addLinkModal: false})}>
@@ -136,7 +174,8 @@ const styles = theme => ({
     mainInfoBlock: {
         display: 'flex',
         padding: '5px',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        width: '100%'
     },
     infoFooter:{
         display: 'flex',
@@ -164,12 +203,26 @@ const styles = theme => ({
     buttonModal: {
         margin: theme.spacing.unit,
     },
+    actionBlock: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        flex: 1,
+        height: '100%'
+    }
   });
 
 function mapStateToProps(state){
     return {
+        userState: state.auth.userState,
         links: state.links.list
     }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(LinkList))
+function mapDispatchToProps(dispatch){
+    return {
+        addLink: (title, url, userCredits) => dispatch(addLink(title, url, userCredits)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LinkList))
