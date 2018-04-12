@@ -2,7 +2,7 @@ import * as Types from '../actions/types'
 
 import { combineReducers } from 'redux'
 
-function auth(state = {isUserLogin: false}, action){
+function auth(state = {isUserLogin: false, isUserFetched: false}, action){
     switch(action.type){
         case Types.USER_LOGIN:
             return {
@@ -13,12 +13,22 @@ function auth(state = {isUserLogin: false}, action){
                     name: action.name,
                     karma: action.karma,
                     token: action.token,
-                    secret: action.secret
-                }
+                    secret: action.secret,
+                    userRole: action.userRole,
+                    phoneNumber: action.phoneNumber
+                },
+                isUserFetched: true
             }
         case Types.USER_LOGOUT:
             return {
-                isUserLogin: false
+                isUserLogin: false,
+                isUserFetched: true
+            }
+        case Types.USER_UPDATE:
+            return {
+                isUserLogin: true,
+                userState: action.userState,
+                isUserFetched: true
             }
         default:
             return state
@@ -27,7 +37,8 @@ function auth(state = {isUserLogin: false}, action){
 
 const initialTestLinks = {
     list: [],
-    filter: 'none'
+    filter: 'none',
+    isFetched: false
 }
 
 function links(state = initialTestLinks, action){
@@ -35,7 +46,8 @@ function links(state = initialTestLinks, action){
         case Types.LINKS_INIT:
             return {
                 filter: 'none',
-                list: action.links
+                list: action.links,
+                isFetched: true
             }
         case Types.LINKS_ADD:
             let newState = {
@@ -60,7 +72,8 @@ function links(state = initialTestLinks, action){
 
 const initialComments = {
     filter: 'none',
-    comments: []
+    comments: [],
+    isFetched: false
 }
 
 function comments(state = initialComments, action){
@@ -68,7 +81,8 @@ function comments(state = initialComments, action){
         case Types.COMMENTS_LINK_INIT:
             return {
                 filter: 'none',
-                comments: action.comments
+                comments: action.comments,
+                isFetched: true
             }
         case Types.COMMENTS_LINK_ADD:
             let newState = {...state}
@@ -84,8 +98,37 @@ function comments(state = initialComments, action){
     }
 }
 
+const initialCategories = {
+    categories: [],
+    isFetched: false
+}
+
+function categories(state = initialCategories, action){
+    switch(action.type){
+        case Types.CATEGORY_INIT:
+            return {
+                categories: action.categories,
+                isFetched: true
+            }
+        default:
+            return state
+    }
+}
+
+const initialActions = {
+
+}
+
+function actions(state = initialActions, action){
+    switch(action.type){
+        default:
+            return state
+    }
+}
+
 export default combineReducers({
     auth,
     links,
-    comments
+    comments,
+    categories
 })

@@ -9,6 +9,9 @@ import { Link } from 'react-router-dom'
 import Login from './components/Login';
 import LinkView from './components/LinkView'
 import { connect } from 'react-redux'
+import CategoryContent from './components/CategoryContent'
+import MyAccount from './components/MyAccount'
+import ResetPassword from './components/ResetPassword'
 
 import { withStyles } from 'material-ui/styles'
 import Grid from 'material-ui/Grid'
@@ -24,9 +27,15 @@ import AccountCircle from 'material-ui-icons/AccountCircle'
 import { identifyUser, logoutUser } from './utils/helpers.js'
 import { withRouter } from 'react-router-dom'
 
-import { addLink, getAllLinks, getAllLinkComments } from './actions/'
+import { addLink, getAllLinks, getAllLinkComments, getAllCategories } from './actions/'
 
 class App extends Component {
+
+  constructor(props){
+    super(props)
+
+    this.handleClose = this.handleClose.bind(this)
+}
 
   state = {
     anchorEl: null
@@ -36,6 +45,7 @@ class App extends Component {
     this.props.identifyUser()
     this.props.getAllLinks()
     this.props.getAllLinkComments()
+    this.props.getAllCategories()
   }
 
   handleMenu = event => {
@@ -45,6 +55,11 @@ class App extends Component {
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
+
+  myAccount = () => {
+    this.props.history.push('/myaccount')
+    this.handleClose()
+  }
 
   render() {
     const { classes, userState, logoutUser } = this.props
@@ -76,7 +91,7 @@ class App extends Component {
                   >
                     <AccountCircle />
                   </IconButton>
-                  <Menu
+                  <Menu className={classes.openMenu}
                     id="menu-appbar"
                     anchorEl={anchorEl}
                     anchorOrigin={{
@@ -91,7 +106,7 @@ class App extends Component {
                     onClose={this.handleClose}
                   >
                     <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                    <MenuItem onClick={this.myAccount}>My account</MenuItem>
                     <MenuItem onClick={() => logoutUser()}>Logout</MenuItem>
                   </Menu>
                 </div>)
@@ -105,8 +120,13 @@ class App extends Component {
         <Route exact path="/categories" component={CategoryList} />
         <Route exact path="/questions" component={QuestionList} />
         <Route exact path="/login" component={Login} />
+        <Route exact path="/myaccount" component={MyAccount} />
+        <Route path="/resetpassword/:email?/:token?"  component={ResetPassword} />
         <Route exact path="/links/:id" render={ ({match}) => (
           <LinkView id={match.params.id} />
+        )} />
+        <Route exact path='/categories/:category' render={ ({match}) => (
+          <CategoryContent category={match.params.category} />
         )} />
       </Grid>
     );
@@ -127,6 +147,9 @@ const styles = {
   },
   menuItem:{
     color: '#FFFFFF',
+  },
+  openMenu:{
+    position: 'absolute'
   }
 };
 
@@ -143,7 +166,8 @@ function mapDispatchToProps(dispatch){
     identifyUser: () => dispatch(identifyUser()),
     logoutUser: () => dispatch(logoutUser()),
     getAllLinks: () => dispatch(getAllLinks()),
-    getAllLinkComments: () => dispatch(getAllLinkComments())
+    getAllLinkComments: () => dispatch(getAllLinkComments()),
+    getAllCategories: () => dispatch(getAllCategories())
   }
 }
 

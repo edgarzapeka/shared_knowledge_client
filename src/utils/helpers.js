@@ -14,7 +14,9 @@ export function identifyUser(){
         id: localStorage.getItem('id'),
         name: localStorage.getItem('name'),
         email: localStorage.getItem('email'),
-        karma: localStorage.getItem('karma')
+        karma: localStorage.getItem('karma'),
+        userRole: localStorage.getItem('userRole'),
+        phoneNumber: localStorage.getItem('phoneNumber')
     })
 }
 
@@ -25,6 +27,8 @@ export function logoutUser(){
     localStorage.setItem('karma', null)
     localStorage.setItem('email', null)
     localStorage.setItem('name', null)
+    localStorage.setItem('userRole', null)
+    localStorage.setItem('phoneNumber', null)
 
     return logout()
 }
@@ -35,5 +39,7 @@ export function saveUserDataLocally(userData){
     localStorage.setItem('id', userData.id)
     localStorage.setItem('name', userData.name)
     localStorage.setItem('email', userData.email)
-    localStorage.setItem('karma', userData.karma)
+    localStorage.setItem('karma', userData.karma),
+    localStorage.setItem('userRole', userData.userRole)
+    localStorage.setItem('phoneNumber', userData.phoneNumber)
 }

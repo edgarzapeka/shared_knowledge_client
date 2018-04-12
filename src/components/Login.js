@@ -5,12 +5,17 @@ import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 import Button from 'material-ui/Button'
 import Checkbox from 'material-ui/Checkbox'
+import Snackbar from 'material-ui/Snackbar'
+import IconButton from 'material-ui/IconButton'
+import CloseIcon from 'material-ui-icons/Close'
+import Modal from 'material-ui/Modal'
 
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router'
 
 import { login, register } from '../actions/'
 import { saveUserDataLocally } from '../utils/helpers'
+import { getPasswordResetLink } from '../utils/api.js'
 
 class Login extends Component{
 
@@ -19,7 +24,8 @@ class Login extends Component{
 
         this.handleChange = this.handleChange.bind(this)
         this.submitLogin = this.submitLogin.bind(this)
-        this.submitRegistration = this.submitRegistration.bind(this)  
+        this.submitRegistration = this.submitRegistration.bind(this) 
+        this.submitResetPassword = this.submitResetPassword.bind(this)  
     }
 
     state ={
@@ -28,13 +34,35 @@ class Login extends Component{
         loginPassword: '',
         registrationEmail: '',
         registrationPassword: '',
-        registrationConfirmPassword: ''
+        registrationConfirmPassword: '',
+        passwordResetModal: false,
+        passwordResetSuccess: false,
+        passwordResetEmail: ''
     }
 
     handleChange = name => event => {
         this.setState({
           [name]: event.target.value,
         });
+    }
+
+    handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        this.setState({ passwordResetSuccess: false });
+    };
+
+    getModalStyle() {
+        const top = 50;
+        const left = 50;
+      
+        return {
+          top: `${top}%`,
+          left: `${left}%`,
+          transform: `translate(-${top}%, -${left}%)`,
+        };
     }
 
     submitLogin(){
@@ -54,7 +82,8 @@ class Login extends Component{
                     id: this.props.userState.userState.id,
                     karma: this.props.userState.userState.karma,
                     name: this.props.userState.userState.name,
-                    email: this.props.userState.userState.email
+                    email: this.props.userState.userState.email,
+                    userRole: this.props.userState.userState.userRole
                 })
             }
         }).then(() => console.log(this.props.userState))
@@ -74,6 +103,13 @@ class Login extends Component{
         console.log(registrationConfirmPassword)
 
         this.props.submitRegister(userData).then(() => console.log(this.props.userState))
+    }
+
+    submitResetPassword = () => {
+        const email = this.state.passwordResetEmail
+
+        getPasswordResetLink(email)
+        this.setState({passwordResetModal: false, passwordResetSuccess: true})
     }
 
     render(){
@@ -123,6 +159,9 @@ class Login extends Component{
                         <Button color="primary" className={classes.button} onClick={this.submitLogin}>
                             Log In
                         </Button>
+                        <Button color="primary" className={classes.button} onClick={() => this.setState({passwordResetModal: true})}>
+                            Forgot your password?
+                        </Button>
                 </Grid>
                 <Grid item md={6} className={classes.container}>
                     <Typography variant="display2" color="inherit" className={classes.rememberMeLabel}>
@@ -158,7 +197,55 @@ class Login extends Component{
                     <Button color="primary" className={classes.button} onClick={this.submitRegistration}>
                         Sign Up
                     </Button>
+                    
                 </Grid>
+                <Modal
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                    open={this.state.passwordResetModal}
+                    onClose={() => this.setState({passwordResetModal: false})}>
+
+                    <div style={this.getModalStyle()} className={classes.paper}>
+                        <Typography variant="title" id="modal-title">
+                        Type your email and we'll send yout link for password reset
+                        </Typography>
+
+                        <TextField
+                                label="Type your email"
+                                placeholder="Email"
+                                className={classes.textField}
+                                margin="normal"
+                                onChange={this.handleChange('passwordResetEmail')}
+                        />
+                        <Button color="primary" className={classes.buttonModal} onClick={this.submitResetPassword}>
+                            Reset Password
+                        </Button>
+                    </div>
+                </Modal>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.passwordResetSuccess}
+                    autoHideDuration={6000}
+                    onClose={this.handleCloseSnackbar}
+                    SnackbarContentProps={{
+                    'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">Check your email. Link to password resend is sent.</span>}
+                    action={[,
+                    <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        className={classes.close}
+                        onClick={() => this.setState({passwordResetSuccess: false})}
+                    >
+                        <CloseIcon />
+                    </IconButton>,
+                    ]}
+                />
             </Grid>            
         )
     }
@@ -192,6 +279,16 @@ const styles = theme => ({
     },
     menu: {
       width: 200,
+    },
+    buttonModal: {
+        margin: theme.spacing.unit,
+    },
+    paper: {
+        position: 'absolute',
+        width: theme.spacing.unit * 50,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
     },
 });
 

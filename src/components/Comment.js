@@ -42,7 +42,7 @@ const styles = theme => ({
     root: theme.mixins.gutters({
       paddingTop: 6,
       paddingBottom: 6,
-      marginTop: theme.spacing.unit * 3,
+      margin: theme.spacing.unit * 3,
       display: 'flex',
     }),
     actionBar:{

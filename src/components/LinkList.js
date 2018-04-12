@@ -68,15 +68,18 @@ class LinkList extends Component{
         const { links, classes } = this.props
 
         return (
-            <Grid container spacing={0}>
-                <Button color="primary" className={classes.button} onClick={() => this.setState({addLinkModal: true})}>
-                    Add new Link
-                </Button>
+            <Grid container spacing={0} className={classes.container}>
+                <div className={classes.addLink}>
+                    <Button color="primary" className={classes.button} onClick={() => this.setState({addLinkModal: true})}>
+                        Add new Link
+                    </Button>
+                </div>
+                <Grid container spacing={16} className={classes.containerBox}>
                 {links.map(l => {
                     return (
                         <Grid item md={12} key={l.id}>
                             <Paper className={classes.root} elevation={4}>
-                                <Link color={'primary'} className={classes.icon} />
+                                <a href={l.linkURL}><Link color={'primary'} className={classes.icon}/></a>
                                 <div className={classes.rateBlock}>
                                     <KeyboardArrowUp />
                                     <Typography variant="body2" component="h4">
@@ -109,6 +112,7 @@ class LinkList extends Component{
                         </Grid>
                     )
                 })}
+                </Grid>
                 <Modal
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
@@ -155,6 +159,14 @@ class LinkList extends Component{
 }
 
 const styles = theme => ({
+    container:{
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    containerBox: {
+        width: '80%',
+        margin: '0 auto'
+    },
     root: theme.mixins.gutters({
       paddingTop: 6,
       paddingBottom: 6,
@@ -185,6 +197,7 @@ const styles = theme => ({
         marginLeft: '15px'
     },
     button: {
+        flex: 1,
         margin: theme.spacing.unit,
         marginTop: theme.spacing.unit * 3
     },

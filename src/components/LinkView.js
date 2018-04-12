@@ -100,10 +100,10 @@ class LinkView extends Component{
     render(){
         const { classes, link, comments, userState } = this.props
         const { commentValue } = this.state
-
+        
         const userCredits = {
-            token: userState.token,
-            secret: userState.secret
+            token: userState === undefined ? null : userState.token,
+            secret: userState === undefined ? null : userState.secret
         }
 
         if (!link)
@@ -111,18 +111,20 @@ class LinkView extends Component{
 
         return (
             <Grid container spacing={0} className={classes.container}>
-                <div className={classes.linkAction}>
-                    <Button className={classes.buttonDelete} variant="raised" color="secondary" onClick={() => this.setState({deleteLinkModal: true})}>
-                        Delete
-                        <Delete className={classes.rightIcon} />
-                    </Button>
-                    <Button className={classes.buttonDelete} variant="raised" color="primary" onClick={() => this.setState({editLinkModal: true})}>
-                        Edit
-                        <ModeEdit className={classes.rightIcon} />
-                    </Button>
-                </div>
                 <Paper className={classes.root} elevation={4}> 
-                    <Grid item md={12} className={classes.linkBlock}>
+                    {(userState.userRole === 'Admin' || userState.userRole === 'Moderator') && 
+                    <div className={classes.linkAction}>
+                        <Button className={classes.buttonDelete} variant="raised" color="secondary" onClick={() => this.setState({deleteLinkModal: true})}>
+                            Delete
+                            <Delete className={classes.rightIcon} />
+                        </Button>
+                        <Button className={classes.buttonDelete} variant="raised" color="primary" onClick={() => this.setState({editLinkModal: true})}>
+                            Edit
+                            <ModeEdit className={classes.rightIcon} />
+                        </Button>
+                    </div>
+                    }
+                    <div className={classes.linkBlock}>
                         <div className={classes.actionBlock}>
                             <KeyboardArrowUp />
                             <Typography variant="title">
@@ -139,29 +141,32 @@ class LinkView extends Component{
                                     by {link.userName}
                                 </Typography>
                             </div>
-                            <Typography variant="subheading">
-                                Link: <RouterLink to={link.linkURL}> {link.linkURL} </RouterLink>
+                            <Typography variant="subheading" className={classes.linkLine}>
+                                <a href={link.linkURL}> {link.linkURL} </a>
                             </Typography>
                         </div>
-                    </Grid>
-                    <Grid item md={12} className={classes.formBlock}>
-                        <TextField
-                            id="multiline-comment"
-                            label="Comment"
-                            multiline
-                            rows="4"
-                            value={commentValue}
-                            onChange={this.handleChange('commentValue')}
-                            className={classes.commentForm}
-                            margin="normal"
-                        />
-                        <Button color="primary" className={classes.button} onClick={this.submitAddComment}>
-                            Add Comment
-                        </Button>
-                    </Grid>
-                    <Grid container spacing={0}>
+                    </div>
+                    {userState.userRole !== undefined && 
+                        <div className={classes.formBlock}>
+                            <TextField
+                                id="multiline-comment"
+                                label="Comment"
+                                multiline
+                                rows="4"
+                                value={commentValue}
+                                onChange={this.handleChange('commentValue')}
+                                className={classes.commentForm}
+                                margin="normal"
+                            />
+                            <Button color="primary" className={classes.button} onClick={this.submitAddComment}>
+                                Add Comment
+                            </Button>
+                        </div>
+                    }
+                </Paper>
+                <Paper elevation={4} className={classes.commentsBlock}>
+                    <Typography variant="display3" className={classes.commentsBlockTitle}>Comments:</Typography>
                         {comments.map(c => <Comment comment={c} key={c.id} deleteComment={() => this.props.deleteLinkComment(c.id, userCredits)} />)}
-                    </Grid>
                 </Paper>
                 <Modal
                     aria-labelledby="simple-modal-title"
@@ -227,23 +232,33 @@ class LinkView extends Component{
 const styles = theme => ({
     container:{
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'row'
     },
     root: theme.mixins.gutters({
         paddingTop: 6,
         paddingBottom: 6,
-        marginTop: theme.spacing.unit * 3,
+        margin: theme.spacing.unit * 3,
         display: 'flex',
-        alignSelf: 'stretch',
         flexDirection: 'column',
-        margin: '0 auto'
+        width: '50%'
     }),
     linkBlock:{
+        marginTop: theme.spacing.unit * 3,
         display: 'flex',
-        alignSelf: 'stretch',
         flexDirection: 'row',
-        justifyContent: 'flex-start'
-        //alignItems: 'flex-start'
+        justifyContent: 'flex-start',
+    },
+    commentsBlock:{
+        paddingTop: 6,
+        paddingBottom: 6,
+        margin: theme.spacing.unit * 3,
+        display: 'flex',
+        order: 1,
+        flexGrow: 1,
+        flexDirection: 'column',
+    },
+    commentsBlockTitle:{
+        textAlign: 'center'
     },
     actionBlock:{
         display: 'flex',
@@ -266,7 +281,6 @@ const styles = theme => ({
     commentForm:{
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        width: '500px',
     },
     formBlock:{
         display: 'flex',
@@ -298,6 +312,9 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
         width: '100%',
+    },
+    linkLine:{
+        display: 'flex'
     }
 })
 

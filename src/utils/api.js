@@ -99,3 +99,39 @@ export function deleteLinkComment(commentId, userCredits){
 export function getAllLinkComments(){
     return fetch(`${host}/Link/GetAllComments`)
 }
+
+export function getAllCategories(){
+    return fetch(`${host}/Category/GetAll`)
+}
+
+export function updateUser(userState){
+    return fetch(`${host}/auth/UpdateUser`, {
+        method: 'POST', 
+        headers:  getDataRequestHeaders(userState.token, userState.secret),
+        body: JSON.stringify({
+            id : userState.id,
+            name: userState.name,
+            email: userState.email,
+            phoneNumber: userState.phoneNumber
+        })
+    })
+}
+
+export function getPasswordResetLink(email){
+    return fetch(`${host}/auth/GetResetPasswordLink/?email=${email}`, {
+        headers: authHeaders
+    })
+}
+
+export function resetPassword(email, token, newpassword, confirmPassword){
+    return fetch(`${host}/auth/resetPassword`, {
+        method: 'POST', 
+        headers:  authHeaders,
+        body: JSON.stringify({
+            email : email,
+            token: token,
+            newPassword: newpassword,
+            confirmPassword: confirmPassword
+        })
+    })
+}

@@ -9,7 +9,8 @@ export function successfullLogin(userState){
         id: userState.id,
         email: userState.email,
         name: userState.name,
-        karma: userState.karma
+        karma: userState.karma,
+        userRole: userState.userRole
     }
 }
 
@@ -63,6 +64,20 @@ function fetchAllLinkComments(data){
     return {
         type: Type.COMMENTS_LINK_INIT,
         comments: data
+    }
+}
+
+function fetchCategories(categories){
+    return {
+        type: Type.CATEGORY_INIT,
+        categories: categories
+    }
+}
+
+function fetchUserData(data){
+    return {
+        type: Type.USER_UPDATE,
+        userState: data
     }
 }
 
@@ -124,4 +139,16 @@ export function getAllLinkComments(){
     return (dispatch) => API.getAllLinkComments()
         .then(response => response.json())
         .then(data => dispatch(fetchAllLinkComments(data.comments)))
+}
+
+export function getAllCategories(){
+    return (dispatch) => API.getAllCategories()
+        .then(response => response.json())
+        .then(data => dispatch(fetchCategories(data)))
+}
+
+export function updateUserAccount(userState){
+    return (dispatch) => API.updateUser(userState)
+        .then(response => response.json())
+        .then(data => fetchUserData(data))
 }
