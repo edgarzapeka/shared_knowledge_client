@@ -81,16 +81,38 @@ function fetchUserData(data){
     }
 }
 
+function fetchAllUsers(data){
+    return {
+        type: Type.USER_GET_ALL,
+        users: data
+    }
+}
+
+function fetchChangedUserRole(data){
+    return {
+        type: Type.USER_UPDATE_USERROLE,
+        newUser: data
+    }
+}
+
 export function login(userData){
     return (dispatch) => API.login(userData.email, userData.password, userData.rememberMe)
         .then(response => response.json())
-        .then(data => dispatch(successfullLogin(data)))
+        .then(data => {
+            if (data.message === undefined){
+                dispatch(successfullLogin(data))
+            }
+        })
 }
 
 export function register(userData){
     return (dispatch) => API.register(userData.email, userData.password, userData.confirmPassword)
         .then(response => response.json())
-        .then(data => dispatch(successfullLogin(data)))
+        .then(data => {
+            if (data.message === undefined){
+                dispatch(successfullLogin(data))
+            }
+        })
 }
 
 export function logout(){
@@ -151,4 +173,20 @@ export function updateUserAccount(userState){
     return (dispatch) => API.updateUser(userState)
         .then(response => response.json())
         .then(data => fetchUserData(data))
+}
+
+export function getAllUsers(){
+    return (dispatch) => API.getAllUsers()
+        .then(response => response.json())
+        .then(data => dispatch(fetchAllUsers(data)))
+}
+
+export function changeUserRole(userEmail, userRole){
+    return (dispatch) => API.changeUserRole(userEmail, userRole)
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === undefined){
+                dispatch(fetchChangedUserRole(data))
+            }
+        })
 }

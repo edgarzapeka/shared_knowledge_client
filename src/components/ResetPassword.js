@@ -12,6 +12,12 @@ import Snackbar from 'material-ui/Snackbar'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui-icons/Close'
 import Grid from 'material-ui/Grid'
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog'
 
 import { resetPassword } from '../utils/api'
 
@@ -28,7 +34,8 @@ class AccountInfo extends Component{
         password: '',
         confirmpassword: '',
         token: '',
-        email: ''
+        email: '',
+        alertDialog: false
     }
 
     componentWillReceiveProps(nextProps){
@@ -47,6 +54,7 @@ class AccountInfo extends Component{
     submitResetPassword = () => {
         const { email, token, confirmpassword, password } = this.state
         resetPassword(email, token, password, confirmpassword)
+        this.setState({alertDialog: true, password: '', confirmpassword: ''})
     }
 
     render(){
@@ -77,6 +85,24 @@ class AccountInfo extends Component{
                 <Button color="primary" className={classes.button} onClick={this.submitResetPassword}>
                     Reset
                 </Button>
+                <Dialog
+                    open={this.state.alertDialog}
+                    onClose={() => this.setState({alertDialog: false})}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Password Reset</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Password reset fulfilled successfully. Go to Login page and try it out!
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={() => this.setState({alertDialog: false})} color="primary">
+                        Ok
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </Grid>
         )
     }

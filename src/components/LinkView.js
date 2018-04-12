@@ -112,7 +112,7 @@ class LinkView extends Component{
         return (
             <Grid container spacing={0} className={classes.container}>
                 <Paper className={classes.root} elevation={4}> 
-                    {(userState.userRole === 'Admin' || userState.userRole === 'Moderator') && 
+                    {( userState !== undefined && userState.userRole === 'Admin' ||  userState !== undefined && userState.userRole === 'Moderator') && 
                     <div className={classes.linkAction}>
                         <Button className={classes.buttonDelete} variant="raised" color="secondary" onClick={() => this.setState({deleteLinkModal: true})}>
                             Delete
@@ -146,7 +146,7 @@ class LinkView extends Component{
                             </Typography>
                         </div>
                     </div>
-                    {userState.userRole !== undefined && 
+                    {userState !== undefined && userState.userRole !== undefined && 
                         <div className={classes.formBlock}>
                             <TextField
                                 id="multiline-comment"

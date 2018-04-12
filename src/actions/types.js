@@ -1,6 +1,8 @@
 export const USER_LOGIN = 'USER_LOGIN'
 export const USER_LOGOUT = 'USER_LOGOUT'
 export const USER_UPDATE = 'USER_UPDATE'
+export const USER_GET_ALL = 'USER_GET_ALL'
+export const USER_UPDATE_USERROLE = 'USER_UPDATE_USERROLE'
 
 export const LINKS_INIT = 'LINKS_INIT'
 export const LINKS_ADD = 'LINKS_ADD'

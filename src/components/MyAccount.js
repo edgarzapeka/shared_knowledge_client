@@ -8,6 +8,7 @@ import Tabs, { Tab } from 'material-ui/Tabs'
 
 import { identifyUser, logoutUser } from '../utils/helpers.js'
 import AccountInfo from './AccountInfo'
+import ManageUsers from './ManageUsers'
 
 class MyAccount extends Component{
 
@@ -27,7 +28,13 @@ class MyAccount extends Component{
         const { classes } = this.props
         const { submenuValue } = this.state
 
-        if (this.props.userState === null){
+        if (this.props.userState === undefined){
+            return <Redirect to="/" />
+        }
+
+        const { userState } = this.props.userState
+
+        if (userState === null){
             return null
         }
 
@@ -48,8 +55,8 @@ class MyAccount extends Component{
                 </div>
                 <div className={classes.submenuContent}>
                     {submenuValue === 0 && <AccountInfo />}
-                    {submenuValue === 1 && <h1>Item Two</h1>}
-                    {submenuValue === 2 && <h1>Item Three</h1>}
+                    {submenuValue === 1 && <h1>Item Three</h1>}
+                    {submenuValue === 2 && <ManageUsers />}
                 </div>
             </Grid>
         )

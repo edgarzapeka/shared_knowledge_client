@@ -32,7 +32,8 @@ class AccountInfo extends Component{
         name: '',
         email: '',
         phoneNumber: '6043466679',
-        resetPasswordSent: false
+        resetPasswordSent: false,
+        userUpdateSent: false
     }
 
     handleCloseSnackbar = (event, reason) => {
@@ -67,11 +68,11 @@ class AccountInfo extends Component{
         const { name, email, phoneNumber } = this.state
         userState.name = name
         userState.email = email
-        userState.phoneNumber = phoneNumber
 
         console.log(userState)
 
         this.props.updateUser(userState).then(saveUserDataLocally(userState))
+        this.setState({userUpdateSent: true})
     }
 
     submitPasswordReset = () => {
@@ -101,7 +102,6 @@ class AccountInfo extends Component{
             <Paper elevation={4} className={classes.container}>
                 <Typography variant="headline" className={classes.metaitem1}>User Name:</Typography>
                 <Typography variant="headline" className={classes.metaitem2}>Email:</Typography>
-                <Typography variant="headline" className={classes.metaitem3}>Phone Number: </Typography>
                 <Typography variant="headline" className={classes.metaitem4}>Karma: {auth.userState.karma}</Typography>
                 <Typography variant="headline" className={classes.metaitem5}>User Type: {auth.userState.userRole}</Typography>
                 <TextField
@@ -119,14 +119,6 @@ class AccountInfo extends Component{
                     margin="normal"
                     value={this.state.email}
                     onChange={this.handleChange('email')}
-                />
-                 <TextField
-                    label="Phone Number"
-                    placeholder="Phone Number"
-                    className={classes.phoneNumberItem}
-                    margin="normal"
-                    value={this.state.phoneNumber}
-                    onChange={this.handleChange('phoneNumber')}
                 />
                 <Button color="secondary" className={classes.passwordResetItem} onClick={this.submitPasswordReset}>
                     Password reset
@@ -154,6 +146,30 @@ class AccountInfo extends Component{
                         color="inherit"
                         className={classes.close}
                         onClick={() => this.setState({resetPasswordSent: false})}
+                    >
+                        <CloseIcon />
+                    </IconButton>,
+                    ]}
+                />
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.userUpdateSent}
+                    autoHideDuration={6000}
+                    onClose={this.handleCloseSnackbar}
+                    SnackbarContentProps={{
+                    'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">User Data Updated Successfully</span>}
+                    action={[,
+                    <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        className={classes.close}
+                        onClick={() => this.setState({userUpdateSent: false})}
                     >
                         <CloseIcon />
                     </IconButton>,

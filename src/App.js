@@ -23,11 +23,12 @@ import IconButton from 'material-ui/IconButton'
 import MenuItem from 'material-ui/Menu/MenuItem'
 import Menu from 'material-ui/Menu'
 import AccountCircle from 'material-ui-icons/AccountCircle'
+import ConfirmEmail from './components/ConfirmEmail'
 
 import { identifyUser, logoutUser } from './utils/helpers.js'
 import { withRouter } from 'react-router-dom'
 
-import { addLink, getAllLinks, getAllLinkComments, getAllCategories } from './actions/'
+import { addLink, getAllLinks, getAllLinkComments, getAllCategories, getAllUsers } from './actions/'
 
 class App extends Component {
 
@@ -46,6 +47,7 @@ class App extends Component {
     this.props.getAllLinks()
     this.props.getAllLinkComments()
     this.props.getAllCategories()
+    this.props.getAllUsers()
   }
 
   handleMenu = event => {
@@ -105,7 +107,6 @@ class App extends Component {
                     open={open}
                     onClose={this.handleClose}
                   >
-                    <MenuItem onClick={this.handleClose}>Profile</MenuItem>
                     <MenuItem onClick={this.myAccount}>My account</MenuItem>
                     <MenuItem onClick={() => logoutUser()}>Logout</MenuItem>
                   </Menu>
@@ -122,6 +123,7 @@ class App extends Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/myaccount" component={MyAccount} />
         <Route path="/resetpassword/:email?/:token?"  component={ResetPassword} />
+        <Route path="/confirmemail/" component={ConfirmEmail} />
         <Route exact path="/links/:id" render={ ({match}) => (
           <LinkView id={match.params.id} />
         )} />
@@ -167,7 +169,8 @@ function mapDispatchToProps(dispatch){
     logoutUser: () => dispatch(logoutUser()),
     getAllLinks: () => dispatch(getAllLinks()),
     getAllLinkComments: () => dispatch(getAllLinkComments()),
-    getAllCategories: () => dispatch(getAllCategories())
+    getAllCategories: () => dispatch(getAllCategories()),
+    getAllUsers: () => dispatch(getAllUsers())
   }
 }
 

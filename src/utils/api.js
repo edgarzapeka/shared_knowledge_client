@@ -135,3 +135,18 @@ export function resetPassword(email, token, newpassword, confirmPassword){
         })
     })
 }
+
+export function getAllUsers(){
+    return fetch(`${host}/auth/GetAllUsers`)
+}
+
+export function changeUserRole(userEmail, userRole){
+    return fetch(`${host}/auth/changeUserRole`, {
+        method: 'POST', 
+        headers:  authHeaders,
+        body: JSON.stringify({
+            email : userEmail,
+            userRole: userRole,
+        })
+    }) 
+}

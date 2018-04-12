@@ -126,9 +126,32 @@ function actions(state = initialActions, action){
     }
 }
 
+const usersInitial = {
+    isFetched: false,
+    users: []
+}
+
+function users(state = usersInitial, action){
+    switch(action.type){
+        case Types.USER_GET_ALL:
+            return {
+                isFetched: true,
+                users: action.users
+            }
+        case Types.USER_UPDATE_USERROLE:
+            return {
+                isFetched: true,
+                users: state.users.map(u => u.id === action.newUser.id ? action.newUser : u)
+            }
+        default:
+            return state
+    }
+}
+
 export default combineReducers({
     auth,
     links,
     comments,
-    categories
+    categories,
+    users
 })

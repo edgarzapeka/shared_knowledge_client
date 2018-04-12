@@ -17,6 +17,13 @@ import { login, register } from '../actions/'
 import { saveUserDataLocally } from '../utils/helpers'
 import { getPasswordResetLink } from '../utils/api.js'
 
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog'
+
 class Login extends Component{
 
     constructor(props){
@@ -37,7 +44,9 @@ class Login extends Component{
         registrationConfirmPassword: '',
         passwordResetModal: false,
         passwordResetSuccess: false,
-        passwordResetEmail: ''
+        passwordResetEmail: '',
+        alertDialogLogin: false,
+        alertDialogRegister: false
     }
 
     handleChange = name => event => {
@@ -85,6 +94,8 @@ class Login extends Component{
                     email: this.props.userState.userState.email,
                     userRole: this.props.userState.userState.userRole
                 })
+            }else{
+                this.setState({alertDialogLogin: true})
             }
         }).then(() => console.log(this.props.userState))
     }
@@ -102,7 +113,12 @@ class Login extends Component{
         console.log(registrationPassword)
         console.log(registrationConfirmPassword)
 
-        this.props.submitRegister(userData).then(() => console.log(this.props.userState))
+        this.props.submitRegister(userData).then(() => {
+            if (!this.props.userState.isUserLogin){
+                this.setState({alertDialogRegister: true})
+            }
+            console.log(this.props.userState)
+        })
     }
 
     submitResetPassword = () => {
@@ -246,6 +262,42 @@ class Login extends Component{
                     </IconButton>,
                     ]}
                 />
+                <Dialog
+                    open={this.state.alertDialogLogin}
+                    onClose={() => this.setState({alertDialogLogin: false})}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Login Failed</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        The email or password you typed are wrong. Try again
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={() => this.setState({alertDialogLogin: false})} color="primary">
+                        Ok
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={this.state.alertDialogRegister}
+                    onClose={() => this.setState({alertDialogRegister: false})}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Registration Failed</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        The email or passwords you typed are wrong. Try again
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={() => this.setState({alertDialogRegister: false})} color="primary">
+                        Ok
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </Grid>            
         )
     }
