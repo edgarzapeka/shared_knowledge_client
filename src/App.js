@@ -4,7 +4,6 @@ import { Route } from 'react-router-dom'
 import HomeScreen from './components/HomeScreen'
 import LinkList from './components/LinkList'
 import CategoryList from './components/CategoryList'
-import QuestionList from './components/QuestionList'
 import { Link } from 'react-router-dom'
 import Login from './components/Login';
 import LinkView from './components/LinkView'
@@ -28,7 +27,7 @@ import ConfirmEmail from './components/ConfirmEmail'
 import { identifyUser, logoutUser } from './utils/helpers.js'
 import { withRouter } from 'react-router-dom'
 
-import { addLink, getAllLinks, getAllLinkComments, getAllCategories, getAllUsers } from './actions/'
+import { getAllLinks, getAllLinkComments, getAllCategories, getAllUsers } from './actions/'
 
 class App extends Component {
 
@@ -80,7 +79,6 @@ class App extends Component {
               <div className={classes.menuItems}>
                 <Link to="/links"><Button color="inherit" className={classes.menuItem}>Links</Button></Link>
                 <Link to="/categories"><Button color="inherit" className={classes.menuItem}>Categories</Button></Link>
-                <Link to="/questions"><Button color="inherit" className={classes.menuItem}>Questions</Button></Link>
               </div>
 
               {(userState.isUserLogin)
@@ -117,9 +115,8 @@ class App extends Component {
         </div> 
 
         <Route exact path="/" component={HomeScreen} />
-        <Route exact  path="/links" component={LinkList} />
+        <Route exact  path="/links/:category?" component={LinkList} />
         <Route exact path="/categories" component={CategoryList} />
-        <Route exact path="/questions" component={QuestionList} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/myaccount" component={MyAccount} />
         <Route path="/resetpassword/:email?/:token?"  component={ResetPassword} />

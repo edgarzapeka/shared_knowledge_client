@@ -2,7 +2,7 @@ const host = 'https://localhost:44344'
 const authHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Accept': 'application/json',
-    Authorization: 'whatever-you-want',
+    //Authorization: 'whatever-you-want',
     'Content-Type': 'application/json',
 }
 
@@ -46,14 +46,15 @@ export function getAllLinks(){
     })
 }
 
-export function addLink(title, url, userCredits){
+export function addLink(title, url, category, userEmail){
     return fetch(`${host}/Link/Add`, {
         method: 'POST',
-        headers: getDataRequestHeaders(userCredits.token, userCredits.secret),
+        headers: authHeaders,
         body: JSON.stringify({
             title: title,
             url: url,
-            userEmail: userCredits.email
+            category: category,
+            email: userEmail
         })
     })
 }
@@ -149,4 +150,12 @@ export function changeUserRole(userEmail, userRole){
             userRole: userRole,
         })
     }) 
+}
+
+export function increaseLinkRate(id){
+    return fetch(`${host}/link/IncreaseLinkRate?id=${id}`)
+}
+
+export function decreaseLinkRate(id){
+    return fetch(`${host}/link/DecreaseLinkRate?id=${id}`)
 }

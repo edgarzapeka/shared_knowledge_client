@@ -16,13 +16,6 @@ class Comment extends Component{
         return (
             <Grid item md={12}>
                 <Paper className={classes.root} elevation={4}>
-                    <div className={classes.actionBar}>
-                        <KeyboardArrowUp />
-                        <Typography variant="title">
-                            {comment.rating}
-                        </Typography>
-                        <KeyboardArrowDown />
-                    </div>
                     <div className={classes.infoBlock}>
                         <Typography variant="subheading">
                             { comment.authorId} | {formatDate(comment.date)}

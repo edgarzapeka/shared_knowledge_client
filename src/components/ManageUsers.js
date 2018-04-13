@@ -91,6 +91,7 @@ class ManageUsers extends Component{
                         <TableCell >User Name</TableCell>
                         <TableCell >Email</TableCell>
                         <TableCell numeric>Karma</TableCell>
+                        <TableCell>Email Confirmed</TableCell>
                         <TableCell>User Role</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
@@ -103,6 +104,7 @@ class ManageUsers extends Component{
                             <TableCell >{u.customUserName}</TableCell>
                             <TableCell >{u.email}</TableCell>
                             <TableCell numeric >{u.karma}</TableCell>
+                            <TableCell>{u.emailConfirmed ? "Yes" : "No"}</TableCell>
                             <TableCell >{u.userRole}</TableCell>
                             <TableCell>
                                 <Button color="primary" className={classes.button} 
@@ -181,7 +183,7 @@ class ManageUsers extends Component{
 
 const styles = theme => ({
     root: {
-        width: '80%',
+        width: '90%',
         marginTop: theme.spacing.unit * 3,
         overflowX: 'auto',
       },

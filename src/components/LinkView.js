@@ -16,6 +16,8 @@ import Delete from 'material-ui-icons/Delete'
 import ModeEdit from 'material-ui-icons/ModeEdit'
 import Modal from 'material-ui/Modal'
 
+import { increaseLinkRate, decreaseLinkRate} from '../actions/'
+
 import { withRouter } from 'react-router-dom'
 
 class LinkView extends Component{
@@ -126,11 +128,15 @@ class LinkView extends Component{
                     }
                     <div className={classes.linkBlock}>
                         <div className={classes.actionBlock}>
-                            <KeyboardArrowUp />
-                            <Typography variant="title">
-                                {link.rating}
+                            <RouterLink to="#" onClick={() => this.props.rateUp(link.id)}>
+                                <KeyboardArrowUp/>
+                            </RouterLink>
+                            <Typography variant="body2" component="h4">
+                            {link.rating}
                             </Typography>
-                            <KeyboardArrowDown />
+                            <RouterLink to="#" onClick={() => this.props.rateDown(link.id)}>
+                                <KeyboardArrowDown />
+                            </RouterLink>
                         </div>
                         <div className={classes.infoBlock}>
                             <div className={classes.titleBlock}>
@@ -332,7 +338,9 @@ function mapDispatchToProps(dispatch){
         addLinkComment: (body, authorId, linkId, userCredits) => dispatch(addLinkComment(body, authorId, linkId, userCredits)),
         deleteLink: (id, userCredits) => dispatch(deleteLink(id, userCredits)),
         updateLink: (linkId, title, linkURL, userCredits) => dispatch(updateLink(linkId, title, linkURL, userCredits)),
-        deleteLinkComment: (commentId, userCredits) => dispatch(deleteLinkComment(commentId, userCredits))
+        deleteLinkComment: (commentId, userCredits) => dispatch(deleteLinkComment(commentId, userCredits)),
+        rateUp: (id) => dispatch(increaseLinkRate(id)),
+        rateDown: (id) => dispatch(decreaseLinkRate(id))
     }
 }
 

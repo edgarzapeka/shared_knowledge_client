@@ -9,6 +9,7 @@ import Tabs, { Tab } from 'material-ui/Tabs'
 import { identifyUser, logoutUser } from '../utils/helpers.js'
 import AccountInfo from './AccountInfo'
 import ManageUsers from './ManageUsers'
+import ContentList from './ContentList'
 
 class MyAccount extends Component{
 
@@ -28,15 +29,17 @@ class MyAccount extends Component{
         const { classes } = this.props
         const { submenuValue } = this.state
 
-        if (this.props.userState === undefined){
+        if (this.props.auth.userState === undefined){
             return <Redirect to="/" />
         }
 
-        const { userState } = this.props.userState
+        const userState = this.props.auth.userState
 
-        if (userState === null){
+        if ( this.props.auth.userState === null){
             return null
         }
+
+        console.log(this.props.auth.userState)
 
         return (
             <Grid container className={classes.container} spacing={0}>
@@ -49,13 +52,15 @@ class MyAccount extends Component{
                         centered
                         >
                         <Tab label="Account Info" />
-                        <Tab label="Content List" />
-                        <Tab label="Manage Users" />
+                        <Tab label="Shared By Me" />
+                        {(userState !== undefined && userState.userRole === 'Admin') &&
+                            <Tab label="Manage Users" />
+                        }
                     </Tabs>
                 </div>
                 <div className={classes.submenuContent}>
                     {submenuValue === 0 && <AccountInfo />}
-                    {submenuValue === 1 && <h1>Item Three</h1>}
+                    {submenuValue === 1 && <ContentList />}
                     {submenuValue === 2 && <ManageUsers />}
                 </div>
             </Grid>
@@ -83,7 +88,7 @@ const styles = theme => ({
 
 function mapStateToProps(state){
     return {
-        userState: state.auth.userState
+        auth: state.auth
     }
 }
 

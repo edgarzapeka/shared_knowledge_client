@@ -127,8 +127,8 @@ export function getAllLinks(){
         .then(data => dispatch(fetchLinks(data.links)))
 }
 
-export function addLink(title, url, userCredits){
-    return (dispatch) => API.addLink(title, url, userCredits)
+export function addLink(title, url, category, userEmail){
+    return (dispatch) => API.addLink(title, url, category, userEmail)
         .then(response => response.json())
         .then(data => dispatch(addedLink(data)))
 }
@@ -187,6 +187,26 @@ export function changeUserRole(userEmail, userRole){
         .then(data => {
             if (data.message === undefined){
                 dispatch(fetchChangedUserRole(data))
+            }
+        })
+}
+
+export function increaseLinkRate(id){
+    return (dispatch) => API.increaseLinkRate(id)
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === undefined){
+                dispatch(fetchUpdatedLink(data))
+            }
+        })
+}
+
+export function decreaseLinkRate(id){
+    return (dispatch) => API.decreaseLinkRate(id)
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === undefined){
+                dispatch(fetchUpdatedLink(data))
             }
         })
 }

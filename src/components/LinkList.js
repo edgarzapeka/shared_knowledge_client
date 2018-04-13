@@ -15,7 +15,12 @@ import Modal from 'material-ui/Modal'
 import TextField from 'material-ui/TextField'
 
 import { formatDate } from '../utils/formatter.js'
-import { addLink} from '../actions/'
+import { addLink, increaseLinkRate, decreaseLinkRate} from '../actions/'
+
+import { FormControl, FormHelperText } from 'material-ui/Form'
+import Select from 'material-ui/Select'
+import Input, { InputLabel } from 'material-ui/Input'
+import { MenuItem } from 'material-ui/Menu'
 
 class LinkList extends Component{
 
@@ -28,10 +33,20 @@ class LinkList extends Component{
     componentDidMount(){
     }
 
+    componentWillReceiveProps(nextProps){
+        if (nextProps.link){
+            this.setState({
+                linkTitle: nextProps.link.title,
+                linkUrl: nextProps.link.linkURL
+            })
+        }
+    }
+
     state = {
         addLinkModal: false,
         linkTitle: '',
-        linkUrl: ''
+        linkUrl: '',
+        category: ''
     }
 
     handleChange = name => event => {
@@ -39,6 +54,10 @@ class LinkList extends Component{
           [name]: event.target.value,
         });
     }
+
+    handleChangeSelect = event => {
+        this.setState({ [event.target.name]: event.target.value });
+    };
 
     getModalStyle() {
         const top = 50;
@@ -52,28 +71,26 @@ class LinkList extends Component{
     }
 
     submitAddLink(){
-        const { linkTitle, linkUrl } = this.state
-        const { userState } = this.props
+        const { linkTitle, linkUrl, category } = this.state
+        const email = this.props.auth.userState.email
 
-        this.props.addLink(linkTitle, linkUrl, userState).then(() => {
-            this.setState({addLinkModal: false,linkTitle: '',linkUrl: ''})
-            console.log('Title: ' + linkTitle)
-            console.log('LinkURL: ' + linkUrl)
-            console.log('State: ' + userState)
-            console.log('added')
+        this.props.addLink(linkTitle, linkUrl, category,  email).then(() => {
+            this.setState({addLinkModal: false,linkTitle: '',linkUrl: '', category: ''})
         })
     }
 
     render(){
-        const { links, classes } = this.props
+        const { links, classes, categories, auth } = this.props
 
         return (
             <Grid container spacing={0} className={classes.container}>
-                <div className={classes.addLink}>
-                    <Button color="primary" className={classes.button} onClick={() => this.setState({addLinkModal: true})}>
-                        Add new Link
-                    </Button>
-                </div>
+                {(auth.userState !== undefined && auth.isUserLogin) && (
+                    <div className={classes.addLink}>
+                        <Button color="primary" className={classes.button} onClick={() => this.setState({addLinkModal: true})}>
+                            Add new Link
+                        </Button>
+                </div> )
+                }
                 <Grid container spacing={16} className={classes.containerBox}>
                 {links.map(l => {
                     return (
@@ -81,11 +98,15 @@ class LinkList extends Component{
                             <Paper className={classes.root} elevation={4}>
                                 <a href={l.linkURL}><Link color={'primary'} className={classes.icon}/></a>
                                 <div className={classes.rateBlock}>
-                                    <KeyboardArrowUp />
+                                    <RouterLink to="#" onClick={() => this.props.rateUp(l.id)}>
+                                        <KeyboardArrowUp/>
+                                    </RouterLink>
                                     <Typography variant="body2" component="h4">
                                     {l.rating}
                                     </Typography>
+                                    <RouterLink to="#" onClick={() => this.props.rateDown(l.id)}>
                                     <KeyboardArrowDown />
+                                    </RouterLink>
                                 </div>
                                 <div className={classes.mainInfoBlock}>
                                     <RouterLink to={`/links/${l.id}`}>
@@ -100,11 +121,8 @@ class LinkList extends Component{
                                         <Typography component="p" className={classes.infoFooterItem}>
                                             {formatDate(l.date)}
                                         </Typography>
-                                        <RouterLink to={`/links/${l.id}`}>
-                                            <InsertComment className={classes.infoFooterItem} />
-                                        </RouterLink>
-                                        <Typography component="p">
-                                            23
+                                        <Typography component="p" className={classes.categoryMargin}>
+                                            #{l.category}
                                         </Typography>
                                     </div>
                                 </div>
@@ -124,7 +142,7 @@ class LinkList extends Component{
                         Add Link
                         </Typography>
                         <Typography variant="subheading" id="simple-modal-description">
-                        some subtitle info that i'll fill later on
+                        Share somethig that would make you mom proud of you
                         </Typography>
 
                         <TextField
@@ -144,6 +162,19 @@ class LinkList extends Component{
                             margin="normal"
                             onChange={this.handleChange('linkUrl')}
                         />
+                        <FormControl className={classes.formControl}>
+                            <InputLabel>Category</InputLabel>
+                            <Select
+                                value={this.state.category}
+                                onChange={this.handleChangeSelect}
+                                inputProps={{
+                                name: 'category',
+                                id: 'category',
+                                }}
+                            >
+                            {categories.map(c => <MenuItem value={c.name} key={c.name}>{c.name}</MenuItem>)}
+                            </Select>
+                        </FormControl>
                         <Button color="primary" className={classes.buttonModal} onClick={this.submitAddLink}>
                             Add
                         </Button>
@@ -222,19 +253,29 @@ const styles = theme => ({
         justifyContent: 'space-between',
         flex: 1,
         height: '100%'
-    }
+    },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: '100%',
+      },
+      categoryMargin:{
+          marginLeft: "10px"
+      }
   });
 
-function mapStateToProps(state){
+function mapStateToProps(state, ownProps){
     return {
-        userState: state.auth.userState,
-        links: state.links.list
+        auth: state.auth,
+        links: ownProps.match.params.category !== undefined ?  state.links.list.filter(l => l.category === ownProps.match.params.category) :state.links.list,
+        categories: state.categories.categories
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
-        addLink: (title, url, userCredits) => dispatch(addLink(title, url, userCredits)),
+        addLink: (title, url, category, email) => dispatch(addLink(title, url, category, email)),
+        rateUp: (id) => dispatch(increaseLinkRate(id)),
+        rateDown: (id) => dispatch(decreaseLinkRate(id))
     }
 }
 

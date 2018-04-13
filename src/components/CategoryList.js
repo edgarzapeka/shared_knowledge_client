@@ -4,6 +4,7 @@ import { Paper } from 'material-ui'
 import { withStyles } from 'material-ui/styles'
 import { connect } from 'react-redux'
 import Typography from 'material-ui/Typography'
+import { Link } from 'react-router-dom'
 
 class CategoryList extends Component{
     render(){
@@ -25,9 +26,11 @@ class CategoryList extends Component{
             <Grid container spacing={16}>
                 <div className={classes.categoryListContainer}>
                     {categories.categories.map(c => (
-                        <Paper className={classes.category} key={c.id}>
-                        <h1>{c.name}</h1>
-                    </Paper>
+                        <Link to={`/links/${c.name}`}>
+                            <Paper className={classes.category} key={c.id}>
+                            <h1>{c.name}</h1>
+                            </Paper>
+                        </Link>
                     ))}
                 </div>
             </Grid>
