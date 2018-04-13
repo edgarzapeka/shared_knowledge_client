@@ -1,4 +1,4 @@
-const host = 'https://localhost:44344'
+const host = 'sharedknowledgeapi20180412080536.azurewebsites.net'
 const authHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Accept': 'application/json',
